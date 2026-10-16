@@ -1,6 +1,6 @@
 //board
 let board; 
-const rowcount = 11;
+const rowcount = 10; ////you only have 10 rows not 11 
 const colimncount = 17;
 const tilesize = 64;
 const boardwidth = colimncount*tilesize;
@@ -10,20 +10,23 @@ let context;
 let TempwallImage;
 //tilemap
 const tilemap = [
-   
-   "XPXXXXXXXXXXXXXX",
-   "X XXXXC    XXXXX",
-   "X XXXXXXXX    CX",
-   "X   XXXXXX XXXXX",
-   "XXX XXXXXX     X", 
-   "X        X XXX X",
-   "X XXX X    XXX X",
-   "X XXX XX X XXX X",
-   "XCXXX   X  E   X",
-   "XXXXXXXXXXXXXXXX",
+   //Needed to add additional Xs to each row  to match the counts you defined in the const. 
+   "XPXXXXXXXXXXXXXXX",
+   "X XXXXC    XXXXXX",
+   "X XXXXXXXX    CXX",
+   "X   XXXXXX XXXXXX",
+   "XXX XXXXXX     XX", 
+   "X        X XXX XX",
+   "X XXX X    XXX XX",
+   "X XXX XX X XXX XX",
+   "XCXXX   X  E   XX",
+   "XXXXXXXXXXXXXXXXX",
 
 ];
-
+//X is the wall
+//C is the candel 
+//p is the player 
+//E is the exit 
 
 //this section is being called back to const x & y in function loadmap
 class block {
@@ -50,10 +53,23 @@ window.onload = function() {
     board.height = boardheight;
     board.width = boardwidth;
     context = board.getContext("2d");
+
+   loadimages(); //remeber to call on your function 
 };
 
 //Images of assets
 function loadimages(){
+//the order is important. you want the walls to load first, put it first. 
+   Tempwall = new Image();
+   
+   Tempwall.onload= function(){ //tells the JS to wait for the wall image to finish loading before using it to draw the map. 
+        loadMap();
+        update();
+//
+      
+   };
+   
+
     /*characterupnocandle = new Image();
     characterupnocandle.src = "char_up_nocandle.gif";
 
@@ -66,8 +82,7 @@ function loadimages(){
     characterrightnocandle = new Image();
     characterrightnocandle.src = "char_right_nocandle.gif";*/
 
-    Tempwall = new Image();
-    Tempwall.src = "temp wall.png";
+        Tempwall.src = "temp wall.png";
 };
 
 
@@ -100,22 +115,18 @@ function loadMap() {
 };
 };
 
-//update section
-loadimages();
-loadMap ();
-console.log(walls.size);
 
-function update (){
-    draw();
-    setTimeout(update,50); 
-}
+//originally had two functions with the same name, making the
+//New function should clear canvas, draw the walls, and repeats the process every 50miliseconds 
 
 function update(){
+   context.clearRect (0,0,board.width, board.height); //clears the pervious drawing before drawing it again and again. without it it will leave a trail of images as the player moves. 
 
-    for (let wall of walls.values()) {
+    for (let wall of walls.values()) { //draws wall again
         context.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height)
     }
-
+    setTimeout(update,50); 
+   
 };
 
 
